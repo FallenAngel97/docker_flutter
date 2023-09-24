@@ -35,7 +35,7 @@ ENV ANDROID_HOME=$ANDROID_HOME \
     PATH="${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools"
 
 # Install linux dependency and utils
-RUN set -eux; apk --no-cache add bash curl wget unzip openjdk11-jdk \
+RUN set -eux; apk --no-cache add bash curl wget unzip openjdk11-jdk upx \
     && rm -rf /tmp/* /var/cache/apk/* \
     && mkdir -p ${ANDROID_HOME}/cmdline-tools /root/.android
 
@@ -46,7 +46,7 @@ RUN set -eux; wget -q https://dl.google.com/android/repository/commandlinetools-
     && rm -rf /tmp/* \
     && touch /root/.android/repositories.cfg \
     && yes | sdkmanager --sdk_root=${ANDROID_HOME} --licenses \
-    && sdkmanager --sdk_root=${ANDROID_HOME} --install "platform-tools"
+    && sdkmanager --sdk_root=${ANDROID_HOME} --install "platform-tools" 
 
 # Create android dependencies
 RUN set -eux; \
@@ -78,17 +78,28 @@ COPY --from=build /build_android_dependencies/ /
 #RUN mkdir -p /tmp && find / -xdev | sort > /tmp/before.txt
 
 # Init android dependency and utils
-RUN set -eux; apk add --no-cache openjdk11-jdk \
-    && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apk/* \
-    /usr/share/man/* /usr/share/doc \
+RUN set -eux; apk add --no-cache openjdk11-jdk upx \
     && cd "${FLUTTER_HOME}/bin" \
     && yes "y" | flutter doctor --android-licenses \
     && dart --disable-analytics \
     && flutter config --no-analytics --enable-android \
     && flutter precache --universal --android \
-    && sdkmanager --sdk_root=${ANDROID_HOME} --install "platform-tools" "emulator" "extras;google;instantapps" \
-    && sdkmanager --sdk_root=${ANDROID_HOME} --install "platforms;android-31" "platforms;android-32" "build-tools;29.0.2"  \
-    && sdkmanager --list_installed > /root/sdkmanager-list-installed.txt
+    && sdkmanager --sdk_root=${ANDROID_HOME} --install "platform-tools" \
+    && sdkmanager --list_installed > /root/sdkmanager-list-installed.txt \
+    && upx --ultra-brute /opt/android/cmdline-tools/latest/bin/apkanalyzer \
+    && upx --ultra-brute /opt/android/cmdline-tools/latest/bin/sdkmanager \
+    && upx --ultra-brute /opt/android/cmdline-tools/latest/bin/avdmanager \
+    && upx --ultra-brute /opt/android/platform-tools/adb \
+    && upx --ultra-brute /opt/android/platform-tools/fastboot \
+    && upx --ultra-brute /opt/android/platform-tools/sqlite3 \
+    && upx --ultra-brute /opt/flutter/bin/cache/dart-sdk/bin/dart \
+    && upx --ultra-brute /opt/flutter/bin/cache/dart-sdk/bin/utils/gen_snapshot \
+    && upx --ultra-brute /opt/flutter/bin/cache/dart-sdk/bin/utils/wasm-opt \
+    && upx --ultra-brute /opt/flutter/bin/cache/dart-sdk/bin/dartaotruntime \
+    && upx --ultra-brute /opt/flutter/bin/cache/artifacts/engine/linux-x64/flutter_tester \
+    && upx --ultra-brute /opt/flutter/bin/cache/artifacts/engine/linux-x64/impellerc \
+    && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apk/* \
+    /usr/share/man/* /usr/share/doc
 
 # Build demo project
 #RUN set -eux; cd "/home/" \
@@ -102,7 +113,7 @@ RUN set -eux; apk add --no-cache openjdk11-jdk \
 #RUN cd / && find / -xdev | sort > /tmp/after.txt
 
 # Add lables
-LABEL name="plugfox/flutter:${VERSION}-android" \
+LABEL name="FallenAngel97/flutter:${VERSION}-android" \
     description="Alpine with flutter & dart for android" \
     flutter.channel="${VERSION}" \
     flutter.version="${VERSION}" \
