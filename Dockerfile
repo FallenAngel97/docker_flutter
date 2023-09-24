@@ -92,6 +92,7 @@ RUN set -eux; apk add --no-cache openjdk11-jdk upx \
     && upx --ultra-brute /opt/android/platform-tools/adb \
     && upx --ultra-brute /opt/android/platform-tools/fastboot \
     && upx --ultra-brute /opt/android/platform-tools/sqlite3 \
+    && upx --ultra-brute /opt/android/platform-tools/mke2fs \
     && upx --ultra-brute /opt/flutter/bin/cache/dart-sdk/bin/dart \
     && upx --ultra-brute /opt/flutter/bin/cache/dart-sdk/bin/utils/gen_snapshot \
     && upx --ultra-brute /opt/flutter/bin/cache/dart-sdk/bin/utils/wasm-opt \
@@ -99,7 +100,9 @@ RUN set -eux; apk add --no-cache openjdk11-jdk upx \
     && upx --ultra-brute /opt/flutter/bin/cache/artifacts/engine/linux-x64/flutter_tester \
     && upx --ultra-brute /opt/flutter/bin/cache/artifacts/engine/linux-x64/impellerc \
     && rm -rf /tmp/* /var/lib/apt/lists/* /var/cache/apk/* \
-    /usr/share/man/* /usr/share/doc
+    /usr/share/man/* /usr/share/doc /opt/flutter/CONTRIBUTING.md /opt/flutter/CODE_OF_CONDUCT.md \
+    /opt/flutter/AUTHORS /opt/flutter/CODEOWNERS /opt/flutter/PATENT_GRANT /opt/flutter/README.md \
+    /opt/flutter/TESTOWNERS /opt/flutter/examples
 
 # Build demo project
 #RUN set -eux; cd "/home/" \
