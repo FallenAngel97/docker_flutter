@@ -35,3 +35,6 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
+permissions:
+  contents: read
+  packages: write
