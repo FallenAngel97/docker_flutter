@@ -84,10 +84,10 @@ RUN set -eux; apk add --no-cache openjdk11-jdk upx \
     && dart --disable-analytics \
     && flutter config --no-analytics --enable-android \
     && flutter precache --universal --android \
-    && sdkmanager --sdk_root=${ANDROID_HOME} --install "platform-tools" \
+    && sdkmanager --sdk_root=${ANDROID_HOME} --install "platform-tools" "emulator" \
     && sdkmanager --list_installed > /root/sdkmanager-list-installed.txt \
     && upx --ultra-brute /opt/android/cmdline-tools/latest/bin/apkanalyzer \
-    && upx --ultra-brute /opt/android/cmdline-tools/latest/bin/sdkmanager \
+    #&& upx --ultra-brute /opt/android/cmdline-tools/latest/bin/sdkmanager \
     && upx --ultra-brute /opt/android/cmdline-tools/latest/bin/avdmanager \
     && upx --ultra-brute /opt/android/platform-tools/adb \
     && upx --ultra-brute /opt/android/platform-tools/fastboot \
